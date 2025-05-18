@@ -8,6 +8,8 @@ import 'package:frontend/view_model/user_view_model.dart';
 import 'package:go_router/go_router.dart';
 
 class SignupScreen extends StatefulWidget {
+  const SignupScreen({super.key});
+
   @override
   State<SignupScreen> createState() => _SignupScreenState();
 }

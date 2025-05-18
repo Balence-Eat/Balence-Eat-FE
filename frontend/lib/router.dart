@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/model/user.dart';
+import 'package:frontend/views/home_screen.dart';
 import 'package:frontend/views/login_screen.dart';
 import 'package:frontend/views/first_signup_screen.dart';
 import 'package:frontend/views/second_signup_screen.dart';
@@ -9,7 +10,7 @@ import 'package:go_router/go_router.dart';
 final GoRouter router = GoRouter(initialLocation: '/', routes: [
   GoRoute(
     path: '/',
-    name: 'home',
+    name: 'start',
     builder: (context, state) => StartScreen(),
   ),
   GoRoute(
@@ -29,5 +30,10 @@ final GoRouter router = GoRouter(initialLocation: '/', routes: [
       final user = state.extra as User;
       return SecondSignupScreen(partialUser: user);
     },
+  ),
+  GoRoute(
+    path: '/home',
+    name: 'home',
+    builder: (context, state) => HomeScreen(),
   ),
 ]);
