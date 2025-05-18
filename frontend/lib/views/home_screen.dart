@@ -48,12 +48,14 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.green[50],
         elevation: 0,
-        title: const Text(
-          '기록',
-          style: TextStyle(
-              fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          color: Colors.green[700],
+          onPressed: () {
+            context.pop();
+          },
         ),
         centerTitle: false,
       ),
@@ -147,7 +149,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       fontWeight: FontWeight.bold,
                       color: Colors.white)),
               onPressed: () {
-                context.go('/add-meal');
+                context.push('/add-meal');
               },
             ),
           )

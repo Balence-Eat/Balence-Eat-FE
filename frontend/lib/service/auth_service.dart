@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:frontend/model/user.dart';
 import 'package:frontend/service/token_stoarage.dart';
@@ -19,7 +20,7 @@ class AuthService {
     }
 
     // 실제 서버 연동 모드
-    final url = Uri.parse('http://10.0.2.2:8000/api/v1/login');
+    final url = Uri.parse('http://localhost:3000/api/v1/login');
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/x-www-form-urlencoded'},
@@ -44,7 +45,7 @@ class AuthService {
 
   static Future<bool> signUp(User user) async {
     if (useMock) {
-      print('[MOCK] 회원가입 성공 처리됨');
+      log('[MOCK] 회원가입 성공 처리됨');
       return true;
     }
 
@@ -56,8 +57,8 @@ class AuthService {
       body: jsonEncode(user.toJson()),
     );
 
-    print('응답 코드: ${response.statusCode}');
-    print('응답 본문: ${response.body}');
+    log('응답 코드: ${response.statusCode}');
+    log('응답 본문: ${response.body}');
 
     return response.statusCode == 200 || response.statusCode == 201;
   }

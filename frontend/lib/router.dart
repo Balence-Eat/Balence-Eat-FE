@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/model/user.dart';
+import 'package:frontend/views/add_meal.dart';
 import 'package:frontend/views/home_screen.dart';
 import 'package:frontend/views/login_screen.dart';
 import 'package:frontend/views/first_signup_screen.dart';
@@ -35,5 +36,10 @@ final GoRouter router = GoRouter(initialLocation: '/', routes: [
     path: '/home',
     name: 'home',
     builder: (context, state) => HomeScreen(),
+  ),
+  GoRoute(
+    path: '/add-meal',
+    name: 'add-meal',
+    builder: (context, state) => AddMealScreen(),
   ),
 ]);

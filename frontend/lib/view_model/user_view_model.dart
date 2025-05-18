@@ -1,7 +1,5 @@
 import 'dart:developer';
 
-import 'package:flutter/material.dart';
-import 'package:frontend/common/error_dialog.dart';
 import 'package:frontend/model/user.dart';
 import 'package:frontend/service/auth_service.dart';
 
