@@ -4,6 +4,7 @@ import 'package:frontend/common/success_dialog.dart';
 import 'package:frontend/model/meal.dart';
 import 'package:frontend/model/meal_food.dart';
 import 'package:frontend/view_model/meal_view_model.dart';
+import 'package:go_router/go_router.dart';
 
 class AddMealScreen extends StatefulWidget {
   const AddMealScreen({super.key});
@@ -56,14 +57,23 @@ class _AddMealScreenState extends State<AddMealScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('식단 추가',
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-        centerTitle: true,
+        backgroundColor: Colors.green[50],
         elevation: 0,
-        backgroundColor: Colors.green[150],
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => Navigator.of(context).pop(),
+          icon: const Icon(Icons.arrow_back),
+          color: Colors.green[700],
+          onPressed: () {
+            context.pop();
+          },
+        ),
+        title: Text(
+          '식단 추가',
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            fontStyle: FontStyle.italic,
+            color: Colors.green[700],
+          ),
         ),
       ),
       body: Padding(

@@ -57,7 +57,15 @@ class _HomeScreenState extends State<HomeScreen> {
             context.pop();
           },
         ),
-        centerTitle: false,
+        title: Text(
+          '식단 기록',
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            fontStyle: FontStyle.italic,
+            color: Colors.green[700],
+          ),
+        ),
       ),
       body: Column(
         children: [
