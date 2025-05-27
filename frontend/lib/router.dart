@@ -7,6 +7,8 @@ import 'package:frontend/views/first_signup_screen.dart';
 import 'package:frontend/views/second_signup_screen.dart';
 import 'package:frontend/views/start_screen.dart';
 import 'package:go_router/go_router.dart';
+import 'package:frontend/views/analysis_page.dart';
+
 
 final GoRouter router = GoRouter(initialLocation: '/', routes: [
   GoRoute(
@@ -41,5 +43,10 @@ final GoRouter router = GoRouter(initialLocation: '/', routes: [
     path: '/add-meal',
     name: 'add-meal',
     builder: (context, state) => AddMealScreen(),
+  ),
+  GoRoute(
+    path: '/analysis',
+    name: 'analysis',
+    builder: (context, state) => AnalysisPage(), 
   ),
 ]);

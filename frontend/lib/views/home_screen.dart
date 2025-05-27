@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/common/build_meal_card.dart';
 import 'package:go_router/go_router.dart';
+import 'analysis_page.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -167,8 +168,18 @@ class _HomeScreenState extends State<HomeScreen> {
         selectedItemColor: Colors.green[700],
         unselectedItemColor: Colors.grey,
         type: BottomNavigationBarType.fixed,
-        currentIndex: 0,
-        onTap: (index) {},
+        currentIndex: 0,//홈일때
+        onTap: (index) {
+          if(index == 0) {
+            context.go('/home');
+          } else if (index == 1) {
+            context.go('/analysis');
+          } else if (index == 2) {
+            context.go('/refrigerator');
+          } else if (index == 3) {
+            context.go('/my');
+          }
+        },
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: '홈'),
           BottomNavigationBarItem(icon: Icon(Icons.bar_chart), label: '분석'),
