@@ -1,39 +1,51 @@
 import 'package:frontend/model/meal_food.dart';
 
 class Meal {
-  final int userId;
   final int mealId;
+  final DateTime datetime;
   final String mealType;
-  final DateTime date;
-  final List<MealFood> foods;
+  final List<MealFood>? mealFoods;
+
+  // total 추가
+  final int totalCalories;
+  final int totalProtein;
+  final int totalCarbs;
+  final int totalFat;
+  // 생성자
 
   Meal({
-    required this.userId,
     required this.mealId,
+    required this.datetime,
     required this.mealType,
-    required this.date,
-    required this.foods,
+    this.mealFoods,
+    this.totalCalories = 0,
+    this.totalProtein = 0,
+    this.totalCarbs = 0,
+    this.totalFat = 0,
   });
 
+  factory Meal.fromJson(Map<String, dynamic> json) {
+    final total = json['total'] ?? {};
+
+    return Meal(
+      mealId: json['meal_id'],
+      mealType: json['meal_type'], // 기본값 fallback 처리
+      datetime: DateTime.parse(json['datetime']),
+      mealFoods: (json['foods'] as List<dynamic>?)
+          ?.map((item) => MealFood.fromJson(item as Map<String, dynamic>))
+          .toList(),
+      totalCalories: total['calories'] ?? 0,
+      totalProtein: total['protein'] ?? 0,
+      totalCarbs: total['carbs'] ?? 0,
+      totalFat: total['fat'] ?? 0,
+    );
+  }
   Map<String, dynamic> toJson() {
     return {
-      'userId': userId,
-      'mealId': mealId,
-      'mealType': mealType,
-      'date': date.toIso8601String(),
-      'foods': foods.map((food) => food.toJson()).toList(),
+      'meal_id': mealId,
+      'meal_type': mealType.toString(),
+      'datetime': datetime.toIso8601String(),
+      'meal_foods': mealFoods?.map((item) => item.toJson()).toList(),
     };
-  }
-
-  static Meal fromJson(Map<String, dynamic> json) {
-    return Meal(
-      userId: json['userId'] as int,
-      mealId: json['mealId'] as int,
-      mealType: json['mealType'] as String,
-      date: DateTime.parse(json['date'] as String),
-      foods: (json['foods'] as List)
-          .map((food) => MealFood.fromJson(food))
-          .toList(),
-    );
   }
 }

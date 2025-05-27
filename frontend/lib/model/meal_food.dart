@@ -1,42 +1,56 @@
+import 'package:frontend/model/food.dart';
+
 class MealFood {
-  final int id;
-  final String title;
-  final int quantity;
-  final int calories;
-  final int protein;
-  final int fat;
-  final int carbs;
+  int? id;
+  int? mealId;
+  int? foodId;
+  final int? quantity;
+  final int? calories;
+  final int? protein;
+  final int? carbs;
+  final int? fat;
+  final Food? food;
+
+  final String? foodName;
 
   MealFood({
-    required this.id,
-    required this.title,
-    required this.quantity,
-    required this.calories,
-    required this.protein,
-    required this.fat,
-    required this.carbs,
+    this.id,
+    this.mealId,
+    this.foodId,
+    this.quantity,
+    this.calories,
+    this.protein,
+    this.carbs,
+    this.fat,
+    this.food,
+    this.foodName,
   });
-
+  factory MealFood.fromJson(Map<String, dynamic> json) {
+    return MealFood(
+      id: json['id'],
+      mealId: json['meal_id'],
+      foodId: json['food_id'],
+      quantity: json['quantity'],
+      calories: json['calories'],
+      protein: json['protein'],
+      carbs: json['carbs'],
+      fat: json['fat'],
+      foodName: json['food_name'],
+    );
+  }
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'title': title,
+      'meal_id': mealId,
+      'food_id': foodId,
       'quantity': quantity,
+      'calories': calories,
       'protein': protein,
-      'fat': fat,
       'carbs': carbs,
+      'fat': fat,
+      'food': food?.toJson(),
     };
   }
 
-  factory MealFood.fromJson(Map<String, dynamic> json) {
-    return MealFood(
-      id: json['id'] as int,
-      title: json['title'] as String,
-      quantity: json['quantity'] as int,
-      calories: json['calories'] as int,
-      protein: json['protein'] as int,
-      fat: json['fat'] as int,
-      carbs: json['carbs'] as int,
-    );
-  }
+  // JSON 메서드 추가
 }

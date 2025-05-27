@@ -1,11 +1,10 @@
-import 'package:flutter/material.dart';
 import 'package:frontend/model/user.dart';
-import 'package:frontend/views/add_meal.dart';
-import 'package:frontend/views/home_screen.dart';
-import 'package:frontend/views/login_screen.dart';
-import 'package:frontend/views/first_signup_screen.dart';
-import 'package:frontend/views/second_signup_screen.dart';
-import 'package:frontend/views/start_screen.dart';
+import 'package:frontend/view/home-screen/add_meal_screen.dart';
+import 'package:frontend/view/home-screen/home_screen.dart';
+import 'package:frontend/view/login-signup/first_signup_screen.dart';
+import 'package:frontend/view/login-signup/login.dart';
+import 'package:frontend/view/login-signup/second_signup_screen.dart';
+import 'package:frontend/view/login-signup/start_screen.dart';
 import 'package:go_router/go_router.dart';
 
 final GoRouter router = GoRouter(initialLocation: '/', routes: [
@@ -20,9 +19,9 @@ final GoRouter router = GoRouter(initialLocation: '/', routes: [
     builder: (context, state) => LoginScreen(),
   ),
   GoRoute(
-    path: '/signup',
-    name: 'signup',
-    builder: (context, state) => SignupScreen(),
+    path: '/first-signup',
+    name: 'first-signup',
+    builder: (context, state) => FirstSignupScreen(),
   ),
   GoRoute(
     path: '/second_signup',

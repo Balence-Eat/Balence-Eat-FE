@@ -8,6 +8,7 @@ class User {
   final int height;
   final int weight;
   final int age;
+  final String? allergy;
   final Goal goal;
 
   User(
@@ -18,6 +19,7 @@ class User {
       required this.height,
       required this.weight,
       required this.age,
+      this.allergy,
       required this.goal});
 
   Map<String, dynamic> toJson() {
@@ -29,6 +31,7 @@ class User {
       "height": height,
       "weight": weight,
       "age": age,
+      "allergy": allergy,
       "goal": goal.toJson(),
     };
   }

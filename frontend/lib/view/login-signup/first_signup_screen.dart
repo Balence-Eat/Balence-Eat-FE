@@ -1,20 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/common/error_dialog.dart';
 import 'package:frontend/common/label_input_field.dart';
+import 'package:frontend/common/show_response_dialog.dart';
 import 'package:frontend/model/goal.dart';
-
 import 'package:frontend/model/user.dart';
-import 'package:frontend/view_model/user_view_model.dart';
+import 'package:frontend/view_model/user_vm.dart';
 import 'package:go_router/go_router.dart';
 
-class SignupScreen extends StatefulWidget {
-  const SignupScreen({super.key});
+class FirstSignupScreen extends StatefulWidget {
+  const FirstSignupScreen({super.key});
 
   @override
-  State<SignupScreen> createState() => _SignupScreenState();
+  State<FirstSignupScreen> createState() => _SignupScreenState();
 }
 
-class _SignupScreenState extends State<SignupScreen> {
+class _SignupScreenState extends State<FirstSignupScreen> {
   // Controllers for user input
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
@@ -26,7 +25,7 @@ class _SignupScreenState extends State<SignupScreen> {
   final TextEditingController goalWeightController = TextEditingController();
   final TextEditingController ageController = TextEditingController();
 
-  final UserViewModel viewModel = UserViewModel();
+  final UserVM viewModel = UserVM();
 
   String? gender; // 'M' or 'F'
 
@@ -133,15 +132,28 @@ class _SignupScreenState extends State<SignupScreen> {
                   height: 50,
                   child: ElevatedButton(
                     onPressed: () {
-                      // 성공 시 User 일부 정보만 담아 second_signup으로 전달
+                      final email = emailController.text.trim();
+                      final password = passwordController.text.trim();
+                      final name = nameController.text.trim();
+                      final age = ageController.text.trim();
+
+                      if (email.isEmpty ||
+                          password.isEmpty ||
+                          name.isEmpty ||
+                          gender == null ||
+                          age.isEmpty) {
+                        showResponseDialog(context, 400, '모든 필드를 입력해주세요.');
+                        return;
+                      }
+
                       final partialUser = User(
-                        name: nameController.text,
-                        gender: gender ?? '',
+                        name: name,
+                        gender: gender!,
                         height: 0,
                         weight: 0,
-                        age: int.tryParse(ageController.text) ?? 0,
-                        email: emailController.text,
-                        password: passwordController.text,
+                        age: int.tryParse(age) ?? 0,
+                        email: email,
+                        password: password,
                         goal: Goal(
                           weight: 0.0,
                           date: DateTime.now(),

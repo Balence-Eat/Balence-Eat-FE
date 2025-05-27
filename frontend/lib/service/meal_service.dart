@@ -1,31 +1,75 @@
-import 'dart:convert';
 import 'dart:developer';
-
+import 'package:dio/dio.dart';
 import 'package:frontend/model/meal.dart';
-import 'package:frontend/service/token_stoarage.dart';
-import 'package:http/http.dart' as http;
+import 'package:frontend/service/token_service.dart';
+import 'package:intl/intl.dart';
 
 class MealService {
-  static const String _baseUrl = 'https://your-api.com/api/v1';
+  static const String _baseUrl = 'http://127.0.0.1:8000'; // 백엔드 URL
+  static final Dio _dio = Dio(BaseOptions(baseUrl: _baseUrl));
 
-  static Future<int> postMeal(Meal meal) async {
+  static String formatDateToUTC(DateTime localDate) {
+    // localDate를 UTC 자정 기준 날짜로 변환
+    final utcDate =
+        DateTime.utc(localDate.year, localDate.month, localDate.day);
+
+    // ISO 8601 포맷 YYYY-MM-DD 형태로 자르기 (시간 제외)
+    return DateFormat('yyyy-MM-dd').format(utcDate);
+  }
+
+  static Future<int> postMealBatch({
+    required String mealType,
+    required DateTime datetime,
+    required List<Map<String, dynamic>> items,
+  }) async {
     try {
-      log('[MOCK] Meal 전송됨: ${jsonEncode(meal.toJson())}');
       final token = await TokenStorage.load();
+      log(mealType);
 
-      final response = await http.post(
-        Uri.parse('$_baseUrl/meals'),
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer $token',
+      final response = await _dio.post(
+        '/meals',
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $token',
+            'Content-Type': 'application/json',
+          },
+        ),
+        data: {
+          'meal_type': mealType,
+          'datetime': datetime.toIso8601String(),
+          'items': items,
         },
-        body: jsonEncode(meal.toJson()),
       );
 
-      return response.statusCode;
-    } catch (e) {
-      log('MealService Error: $e');
-      throw Exception('Failed to post meal');
+      return response.statusCode ?? 400;
+    } catch (e, st) {
+      log('MealService Dio Error: $e\n$st');
+      return 400;
+    }
+  }
+
+  static Future<List<Meal>> getMealByDate(DateTime date) async {
+    try {
+      final token = await TokenStorage.load();
+      var dateStr = formatDateToUTC(date);
+      final response = await _dio.get(
+        '/meals',
+        queryParameters: {
+          'date': dateStr, // UTC 자정 기준 날짜로 변환된 문자열
+        },
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $token',
+            'Content-Type': 'application/json',
+          },
+        ),
+      );
+
+      final data = response.data as List;
+      return data.map((json) => Meal.fromJson(json)).toList();
+    } catch (e, st) {
+      log('MealService Dio Error: $e\n$st');
+      return [];
     }
   }
 }
