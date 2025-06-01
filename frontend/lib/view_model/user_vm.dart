@@ -6,7 +6,6 @@ class UserVM {
     if (username.isEmpty || password.isEmpty) {
       return 400;
     }
-
     return await AuthService.login(username, password);
   }
 

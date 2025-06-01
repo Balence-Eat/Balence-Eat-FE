@@ -4,8 +4,7 @@ import 'package:frontend/model/meal_food.dart';
 Widget buildMealCard(
   String mealType,
   List<dynamic>? foods,
-  String? time,
-  String? calorie, {
+  String? time, {
   String? placeholder,
 }) {
   final bool isEmpty = foods == null || foods.isEmpty;
@@ -52,53 +51,40 @@ Widget buildMealCard(
                   const SizedBox(width: 60),
                 ],
               )
-            : Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // 음식 리스트를 쉼표로 구분하여 나열
+            : Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // 음식 리스트를 쉼표로 구분하여 나열
+                      Text(
+                        foods.map((food) {
+                          if (food is Map && food.containsKey('foodName')) {
+                            return food['foodName'];
+                          } else if (food is MealFood) {
+                            return food.foodName ?? '이름 없음';
+                          }
+                          return food.toString();
+                        }).join(', '),
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      if (time != null) ...[
+                        const SizedBox(height: 4),
                         Text(
-                          foods.map((food) {
-                            if (food is Map && food.containsKey('foodName')) {
-                              return food['foodName'];
-                            } else if (food is MealFood) {
-                              return food.foodName ?? '이름 없음';
-                            }
-                            return food.toString();
-                          }).join(', '),
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
+                          time,
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.grey[600],
                           ),
                         ),
-                        if (time != null) ...[
-                          const SizedBox(height: 4),
-                          Text(
-                            time,
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: Colors.grey[600],
-                            ),
-                          ),
-                        ],
                       ],
-                    ),
+                    ],
                   ),
-                  if (calorie != null)
-                    Text(
-                      calorie,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 14,
-                        color: Colors.green,
-                      ),
-                    ),
-                  if (calorie == null) const SizedBox(width: 60),
-                ],
-              ),
+                ),
+              ]),
       ),
     ],
   );

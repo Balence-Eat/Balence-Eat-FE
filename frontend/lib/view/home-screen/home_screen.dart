@@ -70,13 +70,10 @@ class _HomeScreenState extends State<HomeScreen> {
     }
 
     final timeStr = "${meal.datetime.hour}시 ${meal.datetime.minute}분";
-    final kcalStr = "${meal.totalCalories}kcal";
-
     return buildMealCard(
       type,
       meal.mealFoods,
       timeStr,
-      kcalStr,
     );
   }
 
@@ -144,6 +141,18 @@ class _HomeScreenState extends State<HomeScreen> {
           } catch (e) {
             dinner = null;
           }
+
+          final selectedMeals =
+              [breakfast, lunch, dinner].whereType<Meal>().toList();
+
+          double totalCalories = selectedMeals.fold(
+              0, (sum, meal) => sum + (meal.totalCalories ?? 0));
+          double totalProtein = selectedMeals.fold(
+              0, (sum, meal) => sum + (meal.totalProtein ?? 0));
+          double totalCarbs = selectedMeals.fold(
+              0, (sum, meal) => sum + (meal.totalCarbs ?? 0));
+          double totalFat =
+              selectedMeals.fold(0, (sum, meal) => sum + (meal.totalFat ?? 0));
 
           return Column(
             children: [
@@ -218,6 +227,85 @@ class _HomeScreenState extends State<HomeScreen> {
                     const SizedBox(height: 16),
                     mealCardOrPlaceholder(dinner, '저녁'),
                   ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 8),
+                child: Card(
+                  elevation: 2,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12)),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 12),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text('총 섭취 영양성분',
+                            style: TextStyle(
+                                fontSize: 14, fontWeight: FontWeight.bold)),
+                        const SizedBox(height: 6),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text('칼로리',
+                                      style: TextStyle(
+                                          fontSize: 13,
+                                          color: Colors.grey[700])),
+                                  Text(
+                                      '${totalCalories.toStringAsFixed(1)} kcal',
+                                      style: const TextStyle(fontSize: 13)),
+                                ],
+                              ),
+                            ),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text('단백질',
+                                      style: TextStyle(
+                                          fontSize: 13,
+                                          color: Colors.grey[700])),
+                                  Text('${totalProtein.toStringAsFixed(1)} g',
+                                      style: const TextStyle(fontSize: 13)),
+                                ],
+                              ),
+                            ),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text('탄수화물',
+                                      style: TextStyle(
+                                          fontSize: 13,
+                                          color: Colors.grey[700])),
+                                  Text('${totalCarbs.toStringAsFixed(1)} g',
+                                      style: const TextStyle(fontSize: 13)),
+                                ],
+                              ),
+                            ),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text('지방',
+                                      style: TextStyle(
+                                          fontSize: 13,
+                                          color: Colors.grey[700])),
+                                  Text('${totalFat.toStringAsFixed(1)} g',
+                                      style: const TextStyle(fontSize: 13)),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
               ),
               Padding(

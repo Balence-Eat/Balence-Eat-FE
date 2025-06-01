@@ -5,6 +5,7 @@ import 'package:frontend/view/login-signup/first_signup_screen.dart';
 import 'package:frontend/view/login-signup/login.dart';
 import 'package:frontend/view/login-signup/second_signup_screen.dart';
 import 'package:frontend/view/login-signup/start_screen.dart';
+import 'package:frontend/view/my_%20refrigerator/my_refreigerator.dart';
 import 'package:go_router/go_router.dart';
 
 final GoRouter router = GoRouter(initialLocation: '/', routes: [
@@ -40,5 +41,10 @@ final GoRouter router = GoRouter(initialLocation: '/', routes: [
     path: '/add-meal',
     name: 'add-meal',
     builder: (context, state) => AddMealScreen(),
+  ),
+  GoRoute(
+    path: '/refrigerator',
+    name: 'refrigerator',
+    builder: (context, state) => RefrigeratorScreen(),
   ),
 ]);

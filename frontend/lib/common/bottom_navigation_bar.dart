@@ -22,16 +22,16 @@ class _BottomNavigationBarWidgetState extends State<BottomNavigationBarWidget> {
       onTap: (index) {
         switch (index) {
           case 0:
-            context.go('/home');
+            context.push('/home');
             break;
           case 1:
-            context.go('/analysis');
+            context.push('/analysis');
             break;
           case 2:
-            context.go('/refrigerator');
+            context.push('/refrigerator');
             break;
           case 3:
-            context.go('/my');
+            context.push('/my');
             break;
           default:
             break;

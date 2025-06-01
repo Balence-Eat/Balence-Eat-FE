@@ -25,7 +25,7 @@ class AuthService {
     );
 
     log('응답 코드: ${response.statusCode}');
-    log('응답 본문: ${utf8.decode(response.bodyBytes)}');
+    log('응답 본문: ${response.body}');
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
