@@ -124,7 +124,7 @@ class _AnalysisPageState extends State<AnalysisPage> {
           if (index == 0) context.go('/home');
           else if (index == 1) context.go('/analysis');
           else if (index == 2) context.go('/fridge');
-          else if (index == 3) context.go('/my');
+          else if (index == 3) context.go('/mypage');
         },
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: '홈'),

@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:frontend/model/meal.dart';
-import 'package:frontend/service/token_stoarage.dart';
+import 'package:frontend/service/token_storage.dart';
 import 'package:http/http.dart' as http;
 
 class MealService {
