@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/common/error_dialog.dart';
 import 'package:frontend/common/label_input_field.dart';
+import 'package:frontend/common/show_response_dialog.dart';
 import 'package:frontend/model/goal.dart';
 import 'package:frontend/model/user.dart';
-import 'package:frontend/view_model/user_view_model.dart';
+import 'package:frontend/view_model/user_vm.dart';
 import 'package:go_router/go_router.dart';
-// import your LabeledInputField widget if needed:
-// import 'path_to_labeled_input_field.dart';
 
 class SecondSignupScreen extends StatefulWidget {
   final User partialUser;
@@ -21,7 +19,8 @@ class _SecondSignupScreenState extends State<SecondSignupScreen> {
   final TextEditingController heightController = TextEditingController();
   final TextEditingController weightController = TextEditingController();
   final TextEditingController goalWeightController = TextEditingController();
-  final UserViewModel viewModel = UserViewModel();
+  final TextEditingController allergyController = TextEditingController();
+  final UserVM viewModel = UserVM();
   DateTime? goalDate;
 
   @override
@@ -29,6 +28,7 @@ class _SecondSignupScreenState extends State<SecondSignupScreen> {
     heightController.dispose();
     weightController.dispose();
     goalWeightController.dispose();
+    allergyController.dispose();
     super.dispose();
   }
 
@@ -89,6 +89,11 @@ class _SecondSignupScreenState extends State<SecondSignupScreen> {
                 controller: goalWeightController,
                 hintText: '목표 몸무게 (kg)',
                 keyboardType: TextInputType.number,
+              ),
+              const SizedBox(height: 16),
+              LabeledInputField(
+                hintText: '알러지 (선택 사항)',
+                controller: allergyController,
               ),
               const SizedBox(height: 16),
               InkWell(
@@ -166,16 +171,22 @@ class _SecondSignupScreenState extends State<SecondSignupScreen> {
                             double.tryParse(goalWeightController.text) ?? 0.0,
                         date: goalDate ?? DateTime.now(),
                       ),
+                      allergy: allergyController.text.trim(),
                     );
 
-                    final success = await viewModel.signUp(completedUser);
-                    if (success) {
-                      context.push('/login');
-                    } else {
-                      ErrorDialog.show(
+                    final statusCode = await viewModel.signUp(completedUser);
+                    if (statusCode == 200 || statusCode == 201) {
+                      showResponseDialog(
                         context,
-                        title: '회원가입 실패',
-                        content: '모든 필드를 올바르게 입력했는지 확인하세요.',
+                        statusCode,
+                        '회원가입이 완료되었습니다.',
+                      );
+                      context.push('/login');
+                    } else if (statusCode == 400) {
+                      showResponseDialog(
+                        context,
+                        statusCode,
+                        '이미 존재하는 이메일입니다.',
                       );
                     }
                   },

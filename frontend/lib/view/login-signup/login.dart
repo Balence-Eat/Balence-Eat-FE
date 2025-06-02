@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/common/error_dialog.dart';
-import 'package:frontend/view_model/user_view_model.dart';
+import 'package:frontend/common/show_response_dialog.dart';
+import 'package:frontend/view_model/user_vm.dart';
 import 'package:go_router/go_router.dart';
 
 class LoginScreen extends StatelessWidget {
-  final UserViewModel viewModel = UserViewModel();
-  final TextEditingController usernameController = TextEditingController();
+  final UserVM userVM = UserVM();
+  final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
   LoginScreen({super.key});
 
   void dispose() {
-    usernameController.dispose();
+    emailController.dispose();
     passwordController.dispose();
   }
 
@@ -37,7 +37,7 @@ class LoginScreen extends StatelessWidget {
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 40),
-               Text(
+              Text(
                 '로그인',
                 style: TextStyle(
                   fontSize: 22,
@@ -47,9 +47,9 @@ class LoginScreen extends StatelessWidget {
               ),
               const SizedBox(height: 24),
               TextField(
-                controller: usernameController,
+                controller: emailController,
                 decoration: InputDecoration(
-                  hintText: '사용자 이름',
+                  hintText: '이메일',
                   filled: true,
                   fillColor: const Color(0xFFF2FCEB),
                   border: OutlineInputBorder(
@@ -102,41 +102,37 @@ class LoginScreen extends StatelessWidget {
               //   ),
               // ),
               SizedBox(
-              height: 50,
-              child: ElevatedButton(
-                onPressed: () async {
-                  final success = await viewModel.login(
-                    usernameController.text,
-                    passwordController.text,
-                  );
-                  if (success) {
-                    context.push('/home');
-                  } else {
-                    ErrorDialog.show(
-                      context,
-                      title: '로그인 실패',
-                      content: '사용자 이름과 비밀번호를 확인하세요.',
-                    );
-                  }
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green[500],
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
+                height: 50,
+                child: ElevatedButton(
+                  onPressed: () async {
+                    final statusCode = await userVM.login(
+                        emailController.text, passwordController.text);
+                    if (statusCode == 200) {
+                      context.push('/home');
+                    } else if (statusCode == 401) {
+                      showResponseDialog(context, 401, "아이디 또는 비밀번호가 잘못되었습니다.");
+                    } else {
+                      showResponseDialog(context, statusCode, "로그인에 실패했습니다.");
+                    }
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.green[500],
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  child: const Text(
+                    '로그인',
+                    style: TextStyle(fontSize: 16),
                   ),
                 ),
-                child: const Text( // 이 부분이 빠지면 오류남
-                  '로그인',
-                  style: TextStyle(fontSize: 16),
-                ),
               ),
-            ),
 
               const SizedBox(height: 24),
               Center(
                 child: TextButton(
                   onPressed: () {
-                    context.push('/signup');
+                    context.push('/first-signup');
                   },
                   child: const Text(
                     '계정이 없으신가요? | 회원가입',

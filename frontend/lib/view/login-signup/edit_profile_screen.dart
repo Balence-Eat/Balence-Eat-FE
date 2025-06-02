@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/service/user_service.dart';
-import 'package:frontend/views/profile_screen.dart';
 import 'package:go_router/go_router.dart';
 
 class EditProfileScreen extends StatefulWidget {
@@ -49,7 +48,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.green[50],
-        elevation:0,
+        elevation: 0,
         title: Text(
           '프로필 수정',
           style: TextStyle(
@@ -59,7 +58,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             fontStyle: FontStyle.italic,
           ),
         ),
-      iconTheme: IconThemeData(color: Colors.green[700]),
+        iconTheme: IconThemeData(color: Colors.green[700]),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
@@ -79,25 +78,30 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               TextFormField(
                 decoration: const InputDecoration(labelText: '키 (cm)'),
                 keyboardType: TextInputType.number,
-                onChanged: (val) => setState(() => height = int.tryParse(val) ?? 0),
+                onChanged: (val) =>
+                    setState(() => height = int.tryParse(val) ?? 0),
               ),
               TextFormField(
                 decoration: const InputDecoration(labelText: '몸무게 (kg)'),
                 keyboardType: TextInputType.number,
-                onChanged: (val) => setState(() => weight = int.tryParse(val) ?? 0),
+                onChanged: (val) =>
+                    setState(() => weight = int.tryParse(val) ?? 0),
               ),
               TextFormField(
                 decoration: const InputDecoration(labelText: '나이'),
                 keyboardType: TextInputType.number,
-                onChanged: (val) => setState(() => age = int.tryParse(val) ?? 0),
+                onChanged: (val) =>
+                    setState(() => age = int.tryParse(val) ?? 0),
               ),
               TextFormField(
                 decoration: const InputDecoration(labelText: '목표 몸무게'),
                 keyboardType: TextInputType.number,
-                onChanged: (val) => setState(() => goalWeight = int.tryParse(val) ?? 0),
+                onChanged: (val) =>
+                    setState(() => goalWeight = int.tryParse(val) ?? 0),
               ),
               TextFormField(
-                decoration: const InputDecoration(labelText: '목표 날짜 (YYYY-MM-DD)'),
+                decoration:
+                    const InputDecoration(labelText: '목표 날짜 (YYYY-MM-DD)'),
                 keyboardType: TextInputType.datetime,
                 onChanged: (val) {
                   try {

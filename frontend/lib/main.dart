@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/router.dart';
-import 'package:frontend/views/start_screen.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   runApp(BalanceEatApp());
 }
 
-class BalanceEatApp extends StatelessWidget {
+class BalanceEatApp extends StatefulWidget {
+  @override
+  State<BalanceEatApp> createState() => _BalanceEatAppState();
+}
+
+class _BalanceEatAppState extends State<BalanceEatApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
