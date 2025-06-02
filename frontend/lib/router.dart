@@ -1,8 +1,12 @@
 import 'package:frontend/model/user.dart';
+import 'package:frontend/view/analysis_screen/analysis_page.dart';
 import 'package:frontend/view/home-screen/add_meal_screen.dart';
 import 'package:frontend/view/home-screen/home_screen.dart';
+import 'package:frontend/view/my_info/edit_profile_screen.dart';
 import 'package:frontend/view/login-signup/first_signup_screen.dart';
 import 'package:frontend/view/login-signup/login.dart';
+import 'package:frontend/view/my_info/profile_login.dart';
+import 'package:frontend/view/my_info/profile_screen.dart';
 import 'package:frontend/view/login-signup/second_signup_screen.dart';
 import 'package:frontend/view/login-signup/start_screen.dart';
 import 'package:frontend/view/my_%20refrigerator/my_refreigerator.dart';
@@ -46,5 +50,25 @@ final GoRouter router = GoRouter(initialLocation: '/', routes: [
     path: '/refrigerator',
     name: 'refrigerator',
     builder: (context, state) => RefrigeratorScreen(),
+  ),
+  GoRoute(
+    path: '/analysis',
+    name: 'analysis',
+    builder: (context, state) => AnalysisPage(),
+  ),
+  GoRoute(
+    path: '/my',
+    name: 'my',
+    builder: (context, state) => const ProfileLogin(),
+  ),
+  GoRoute(
+    path: '/profile/detail',
+    name: 'profile',
+    builder: (context, state) => const ProfileScreen(),
+  ),
+  GoRoute(
+    path: '/edit-profile',
+    name: 'edit-profile',
+    builder: (context, state) => EditProfileScreen(),
   ),
 ]);

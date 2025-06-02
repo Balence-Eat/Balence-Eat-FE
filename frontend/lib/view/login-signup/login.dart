@@ -37,7 +37,7 @@ class LoginScreen extends StatelessWidget {
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 40),
-              const Text(
+              Text(
                 '로그인',
                 style: TextStyle(
                   fontSize: 22,
@@ -73,6 +73,34 @@ class LoginScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 24),
+              // SizedBox(
+              //   height: 50,
+              //   child: ElevatedButton(
+              //     onPressed: () async {
+              //       final success = await viewModel.login(
+              //           usernameController.text, passwordController.text);
+              //       if (success) {
+              //         context.push('/home');
+              //       } else {
+              //         ErrorDialog.show(
+              //           context,
+              //           title: '로그인 실패',
+              //           content: '사용자 이름과 비밀번호를 확인하세요.',
+              //         );
+              //       }
+              //     },
+              //     style: ElevatedButton.styleFrom(
+              //       backgroundColor: Colors.green[500],
+              //       shape: RoundedRectangleBorder(
+              //         borderRadius: BorderRadius.circular(12),
+              //       ),
+              //     ),
+              //     child: const Text(
+              //       '로그인',
+              //       style: TextStyle(fontSize: 16),
+              //     ),
+              //   ),
+              // ),
               SizedBox(
                 height: 50,
                 child: ElevatedButton(
@@ -99,6 +127,7 @@ class LoginScreen extends StatelessWidget {
                   ),
                 ),
               ),
+
               const SizedBox(height: 24),
               Center(
                 child: TextButton(
