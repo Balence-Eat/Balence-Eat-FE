@@ -1,7 +1,7 @@
 import 'dart:developer';
 import 'package:dio/dio.dart';
 import 'package:frontend/model/meal.dart';
-import 'package:frontend/service/token_service.dart';
+import 'package:frontend/service/token_storage.dart';
 import 'package:intl/intl.dart';
 
 class MealService {

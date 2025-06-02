@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:frontend/common/bottom_navigation_bar.dart';
 import 'package:go_router/go_router.dart';
 
 class AnalysisPage extends StatefulWidget {
@@ -57,151 +58,138 @@ class _AnalysisPageState extends State<AnalysisPage> {
     const limeGreen = Color(0xFFB9F73E);
 
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.green[50],
-        elevation: 0,
-        title: Text(
-          '식단 분석',
-          style: TextStyle(
-            color: Colors.green[700],
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-            fontStyle: FontStyle.italic,
+        appBar: AppBar(
+          backgroundColor: Colors.green[50],
+          elevation: 0,
+          title: Text(
+            '식단 분석',
+            style: TextStyle(
+              color: Colors.green[700],
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              fontStyle: FontStyle.italic,
+            ),
+          ),
+          iconTheme: IconThemeData(color: Colors.green[700]),
+        ),
+        body: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: ListView(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(Icons.chevron_left),
+                  const SizedBox(width: 10),
+                  GestureDetector(
+                    onTap: _selectDate,
+                    child: Row(
+                      children: [
+                        const Icon(Icons.calendar_today, size: 18),
+                        const SizedBox(width: 6),
+                        Text(
+                          _formattedDate(selectedDate),
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.green[700],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  const Icon(Icons.chevron_right),
+                ],
+              ),
+              const SizedBox(height: 24),
+              _buildBarChart(),
+              const SizedBox(height: 16),
+              const Text("목표 섭취 칼로리 : 2,400kcal",
+                  style: TextStyle(fontSize: 16)),
+              const Text("총 섭취 칼로리 : 1,100kcal",
+                  style: TextStyle(fontSize: 16)),
+              const SizedBox(height: 24),
+              const Text("AI 식단 추천 🌱",
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              const SizedBox(height: 12),
+              _bullet("닭가슴살만으로는 영양 불균형이 심각하므로, 다른 재료가 있다고 가정하고 식단을 구성합니다."),
+              _bullet("재료가 없다면 채소, 과일, 탄수화물 등을 반드시 구매해야 합니다."),
+              _bullet("냉장고에 흔히 있는 채소(양파, 파, 마늘), 기름, 소금, 후추가 있다고 가정합니다."),
+            ],
           ),
         ),
-        iconTheme: IconThemeData(color: Colors.green[700]),
+        bottomNavigationBar: BottomNavigationBarWidget(currentIndex: 1));
+  }
+
+  Widget _buildBarChart() {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black12,
+            blurRadius: 6,
+            offset: Offset(0, 2),
+          ),
+        ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: ListView(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Icon(Icons.chevron_left),
-                const SizedBox(width: 10),
-                GestureDetector(
-                  onTap: _selectDate,
-                  child: Row(
-                    children: [
-                      const Icon(Icons.calendar_today, size: 18),
-                      const SizedBox(width: 6),
-                      Text(
-                        _formattedDate(selectedDate),
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.green[700],
-                        ),
-                      ),
-                    ],
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            height: 200,
+            child: BarChart(
+              BarChartData(
+                alignment: BarChartAlignment.spaceAround,
+                barGroups: [
+                  BarChartGroupData(x: 0, barRods: [
+                    BarChartRodData(toY: 50, color: Colors.redAccent),
+                  ]),
+                  BarChartGroupData(x: 1, barRods: [
+                    BarChartRodData(toY: 20, color: Colors.orange),
+                  ]),
+                  BarChartGroupData(x: 2, barRods: [
+                    BarChartRodData(toY: 30, color: Colors.green),
+                  ]),
+                ],
+                titlesData: FlTitlesData(
+                  bottomTitles: AxisTitles(
+                    sideTitles: SideTitles(
+                      showTitles: true,
+                      getTitlesWidget: (value, _) {
+                        switch (value.toInt()) {
+                          case 0:
+                            return const Text("탄수화물");
+                          case 1:
+                            return const Text("단백질");
+                          case 2:
+                            return const Text("지방");
+                          default:
+                            return const Text("");
+                        }
+                      },
+                    ),
                   ),
+                  leftTitles:
+                      AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                  topTitles:
+                      AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                  rightTitles:
+                      AxisTitles(sideTitles: SideTitles(showTitles: false)),
                 ),
-                const SizedBox(width: 10),
-                const Icon(Icons.chevron_right),
-              ],
+                gridData: FlGridData(show: false),
+                borderData: FlBorderData(show: false),
+              ),
             ),
-            const SizedBox(height: 24),
-            _buildBarChart(),
-            const SizedBox(height: 16),
-            const Text("목표 섭취 칼로리 : 2,400kcal", style: TextStyle(fontSize: 16)),
-            const Text("총 섭취 칼로리 : 1,100kcal", style: TextStyle(fontSize: 16)),
-            const SizedBox(height: 24),
-            const Text("AI 식단 추천 🌱", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 12),
-            _bullet("닭가슴살만으로는 영양 불균형이 심각하므로, 다른 재료가 있다고 가정하고 식단을 구성합니다."),
-            _bullet("재료가 없다면 채소, 과일, 탄수화물 등을 반드시 구매해야 합니다."),
-            _bullet("냉장고에 흔히 있는 채소(양파, 파, 마늘), 기름, 소금, 후추가 있다고 가정합니다."),
-          ],
-        ),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        selectedItemColor: Colors.green[700],
-        unselectedItemColor: Colors.grey,
-        type: BottomNavigationBarType.fixed,
-        currentIndex: 1, // 분석 탭
-        onTap: (index) {
-          if (index == 0) context.go('/home');
-          else if (index == 1) context.go('/analysis');
-          else if (index == 2) context.go('/fridge');
-          else if (index == 3) context.go('/mypage');
-        },
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: '홈'),
-          BottomNavigationBarItem(icon: Icon(Icons.bar_chart), label: '분석'),
-          BottomNavigationBarItem(icon: Icon(Icons.kitchen), label: '냉장고'),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: '마이'),
+          ),
+          const SizedBox(height: 16)
         ],
       ),
     );
   }
-
-  Widget _buildBarChart() {
-  return Container(
-    padding: const EdgeInsets.all(16),
-    decoration: BoxDecoration(
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(12),
-      boxShadow: [
-        BoxShadow(
-          color: Colors.black12,
-          blurRadius: 6,
-          offset: Offset(0, 2),
-        ),
-      ],
-    ),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SizedBox(
-          height: 200,
-          child: BarChart(
-            BarChartData(
-              alignment: BarChartAlignment.spaceAround,
-              barGroups: [
-                BarChartGroupData(x: 0, barRods: [
-                  BarChartRodData(toY: 50,color: Colors.redAccent),
-                ]),
-                BarChartGroupData(x: 1, barRods: [
-                  BarChartRodData(toY: 20, color: Colors.orange),
-                ]),
-                BarChartGroupData(x: 2, barRods: [
-                  BarChartRodData(toY: 30, color: Colors.green),
-                ]),
-              ],
-              titlesData: FlTitlesData(
-                bottomTitles: AxisTitles(
-                  sideTitles: SideTitles(
-                    showTitles: true,
-                    getTitlesWidget: (value, _) {
-                      switch (value.toInt()) {
-                        case 0:
-                          return const Text("탄수화물");
-                        case 1:
-                          return const Text("단백질");
-                        case 2:
-                          return const Text("지방");
-                        default:
-                          return const Text("");
-                      }
-                    },
-                  ),
-                ),
-                leftTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-              ),
-              gridData: FlGridData(show: false),
-              borderData: FlBorderData(show: false),
-            ),
-          ),
-        ),
-        const SizedBox(height: 16)
-      ],
-    ),
-  );
-}
-
 
   static Widget _bullet(String text) {
     return Padding(

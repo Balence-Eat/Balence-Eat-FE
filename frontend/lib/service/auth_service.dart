@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:frontend/model/user.dart';
-import 'package:frontend/service/token_service.dart';
+import 'package:frontend/service/token_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:frontend/model/user_profile.dart';
 

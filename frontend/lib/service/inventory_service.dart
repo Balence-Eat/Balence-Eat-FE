@@ -2,7 +2,7 @@ import 'dart:developer';
 
 import 'package:dio/dio.dart';
 import 'package:frontend/model/inventory.dart';
-import 'package:frontend/service/token_service.dart';
+import 'package:frontend/service/token_storage.dart';
 
 class InventoryService {
   static const String _baseUrl = 'http://127.0.0.1:8000'; // 백엔드 URL

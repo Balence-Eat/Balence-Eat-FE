@@ -8,33 +8,21 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class UserViewModel {
-  Future<bool> login(String username, String password) async {
+  Future<int> login(String username, String password) async {
     if (username.isEmpty || password.isEmpty) {
-      return false;
+      return 400;
     }
-
     return await AuthService.login(username, password);
   }
 
-  Future<bool> signUp(User user) async {
-    try {
-      final success = await AuthService.signUp(user);
-      if (success) {
-        log('회원가입 성공');
-      } else {
-        log('회원가입 실패');
-      }
-      return success;
-    } catch (e) {
-      log('회원가입 실패: $e');
-      return false;
-    }
+  Future<int> signUp(User user) async {
+    return await AuthService.signUp(user);
   }
 
   Future<UserProfile?> fetchProfile() async {
     UserProfile? userProfile;
     final token = await TokenStorage.load();
-    final url = Uri.parse('http://localhost:8000/profile');
+    final url = Uri.parse('http://127.0.0.1:8000');
 
     final response = await http.get(
       url,
