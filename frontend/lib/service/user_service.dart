@@ -26,6 +26,11 @@ class UserService {
 
   static Future<bool> updateProfile(Map<String, dynamic> data) async {
     final token = await TokenStorage.load();
+      if (token == null || token.isEmpty) {
+        print("토큰 비어있음");
+      } else {
+        print("토큰: $token");
+      }
 
     final response = await http.patch(
       Uri.parse('$baseUrl/profile/edit-profile'),

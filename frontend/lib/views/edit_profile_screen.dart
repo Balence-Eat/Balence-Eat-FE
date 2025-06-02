@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/service/user_service.dart';
+import 'package:frontend/views/profile_screen.dart';
+import 'package:go_router/go_router.dart';
 
 class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen({super.key});
@@ -10,8 +12,8 @@ class EditProfileScreen extends StatefulWidget {
 
 class _EditProfileScreenState extends State<EditProfileScreen> {
   final _formKey = GlobalKey<FormState>();
+
   String name = '';
-  String password = '';
   String gender = 'M';
   int height = 170;
   int weight = 60;
@@ -21,26 +23,24 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   Future<void> _submit() async {
     final body = {
-      "password": password,
       "name": name,
-      "gender": gender,
       "height": height,
       "weight": weight,
       "age": age,
       "goal": {
-        "weight": goalWeight,
-        "date": goalDate.toIso8601String().split('Z')[0],
+        "weight": goalWeight.toInt(),
+        "date": goalDate.toIso8601String().split("T")[0],
       }
     };
 
+    print("보낼 데이터: $body");
+
     final success = await UserService.updateProfile(body);
-    if (success) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("프로필 정보가 업데이트되었습니다")),
-        );
-        Navigator.pop(context); // 뒤로가기
-      }
+    if (success && mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("프로필 정보가 업데이트되었습니다")),
+      );
+      context.pop(context); // 이전 화면으로 돌아가기
     }
   }
 
@@ -49,8 +49,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.green[50],
-        elevation: 0,
-        title: Text('프로필 수정',
+        elevation:0,
+        title: Text(
+          '프로필 수정',
           style: TextStyle(
             color: Colors.green[700],
             fontSize: 20,
@@ -58,58 +59,54 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             fontStyle: FontStyle.italic,
           ),
         ),
-        iconTheme: IconThemeData(color: Colors.green[700]),
-        ),
+      iconTheme: IconThemeData(color: Colors.green[700]),
+      ),
       body: Padding(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(16),
         child: Form(
           key: _formKey,
           child: ListView(
             children: [
               TextFormField(
                 decoration: const InputDecoration(labelText: '이름'),
-                onChanged: (val) => name = val,
+                onChanged: (val) => setState(() => name = val),
               ),
-              TextFormField(
-                decoration: const InputDecoration(labelText: '비밀번호'),
-                obscureText: true,
-                onChanged: (val) => password = val,
-              ),
-              TextFormField(
-                decoration: const InputDecoration(labelText: '성별 (M/F)'),
-                onChanged: (val) => gender = val,
-              ),
+              // 성별 입력이 필요하면 이 부분 활성화하세요
+              // TextFormField(
+              //   decoration: const InputDecoration(labelText: '성별 (M/F)'),
+              //   onChanged: (val) => setState(() => gender = val),
+              // ),
               TextFormField(
                 decoration: const InputDecoration(labelText: '키 (cm)'),
                 keyboardType: TextInputType.number,
-                onChanged: (val) => height = int.tryParse(val) ?? 0,
+                onChanged: (val) => setState(() => height = int.tryParse(val) ?? 0),
               ),
               TextFormField(
                 decoration: const InputDecoration(labelText: '몸무게 (kg)'),
                 keyboardType: TextInputType.number,
-                onChanged: (val) => weight = int.tryParse(val) ?? 0,
+                onChanged: (val) => setState(() => weight = int.tryParse(val) ?? 0),
               ),
               TextFormField(
                 decoration: const InputDecoration(labelText: '나이'),
                 keyboardType: TextInputType.number,
-                onChanged: (val) => age = int.tryParse(val) ?? 0,
+                onChanged: (val) => setState(() => age = int.tryParse(val) ?? 0),
               ),
               TextFormField(
                 decoration: const InputDecoration(labelText: '목표 몸무게'),
                 keyboardType: TextInputType.number,
-                onChanged: (val) => goalWeight = int.tryParse(val) ?? 0,
+                onChanged: (val) => setState(() => goalWeight = int.tryParse(val) ?? 0),
               ),
-                TextFormField(
-                    decoration: const InputDecoration(labelText: '목표 날짜 (YYYY-MM-DD)'),
-                    keyboardType: TextInputType.datetime,
-                    onChanged: (val) {
-                    try {
-                        goalDate = DateTime.parse(val);
-                    } catch (e) {
-                        goalDate = DateTime.now();
-                    }
-                    },
-                ),
+              TextFormField(
+                decoration: const InputDecoration(labelText: '목표 날짜 (YYYY-MM-DD)'),
+                keyboardType: TextInputType.datetime,
+                onChanged: (val) {
+                  try {
+                    setState(() => goalDate = DateTime.parse(val));
+                  } catch (e) {
+                    // 잘못된 날짜 포맷은 무시
+                  }
+                },
+              ),
               ElevatedButton(
                 onPressed: _submit,
                 child: const Text("저장"),

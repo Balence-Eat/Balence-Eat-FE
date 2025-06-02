@@ -4,7 +4,9 @@ import 'package:frontend/service/user_service.dart';
 import 'package:go_router/go_router.dart';
 
 class ProfileScreen extends StatefulWidget {
-  const ProfileScreen({super.key});
+  final Map<String, dynamic>? updatedUser;
+
+  const ProfileScreen({super.key, this.updatedUser});
 
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
@@ -17,7 +19,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   void initState() {
     super.initState();
-    _loadProfile();
+    if (widget.updatedUser != null) {
+      profileData = widget.updatedUser;
+      isLoading = false;
+    } else {
+      _loadProfile();
+    }
   }
 
   Future<void> _loadProfile() async {
@@ -64,13 +71,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
             fontSize: 20,
             fontWeight: FontWeight.bold,
             fontStyle: FontStyle.italic,
-            ),
           ),
-          iconTheme: IconThemeData(color: Colors.green[700]),
+        ),
+        iconTheme: IconThemeData(color: Colors.green[700]),
       ),
-body: profileData == null
-    ? const Center(child: CircularProgressIndicator())
-    : SingleChildScrollView(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: Container(
           padding: const EdgeInsets.all(20),
@@ -92,14 +97,14 @@ body: profileData == null
               buildProfileRow('성별', profileData!['gender']),
               buildProfileRow('키', '${profileData!['height']} cm'),
               buildProfileRow('몸무게', '${profileData!['weight']} kg'),
-              buildProfileRow('목표 몸무게', '${profileData!['goal']['weight']} kg'),
-              buildProfileRow('목표 날짜', profileData!['goal']['date'].toString().split('T')[0]),
-
+              buildProfileRow('목표 몸무게', '${goal['weight']} kg'),
+              buildProfileRow('목표 날짜', goal['date'].toString().split('T')[0]),
               const SizedBox(height: 20),
               Center(
                 child: ElevatedButton(
-                  onPressed: () {
-                    context.push('/edit-profile' ); // edit-profile 화면으로 이동
+                  onPressed: () async{
+                    await context.push('/edit-profile');
+                    _loadProfile(); // 프로필 업데이트 후 다시 불러오기
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.green[700],
@@ -114,16 +119,15 @@ body: profileData == null
                   ),
                 ),
               ),
-          ],
+            ],
+          ),
         ),
       ),
-    ),
-    
-    bottomNavigationBar: BottomNavigationBar(
+      bottomNavigationBar: BottomNavigationBar(
         selectedItemColor: Colors.green[700],
         unselectedItemColor: Colors.grey,
         type: BottomNavigationBarType.fixed,
-        currentIndex: 3, // 마이 탭
+        currentIndex: 3,
         onTap: (index) {
           if (index == 0) context.go('/home');
           else if (index == 1) context.go('/analysis');
@@ -139,6 +143,7 @@ body: profileData == null
       ),
     );
   }
+
   Widget buildProfileRow(String title, String value) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10),
@@ -158,4 +163,3 @@ body: profileData == null
     );
   }
 }
-

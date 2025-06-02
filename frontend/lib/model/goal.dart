@@ -12,7 +12,7 @@ class Goal {
   }
 
   Map<String, dynamic> toJson() => {
-        'weight': weight,
-        'date': date.toIso8601String().split('Z').first, // Z 제거
-      };
+  'weight': weight,
+  'date': date.toLocal().toIso8601String().split('.').first, // milliseconds 제거 + Z 없음
+  };
 }
