@@ -1,7 +1,11 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:frontend/common/bottom_navigation_bar.dart';
 import 'package:go_router/go_router.dart';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:frontend/service/token_storage.dart';
 
 class AnalysisPage extends StatefulWidget {
   const AnalysisPage({super.key});
@@ -12,6 +16,57 @@ class AnalysisPage extends StatefulWidget {
 
 class _AnalysisPageState extends State<AnalysisPage> {
   DateTime selectedDate = DateTime.now();
+  String? _recommendationText;
+  bool _isLoadingRecommendation = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchRecommendation();
+  }
+
+  Future<void> _fetchRecommendation() async {
+  setState(() {
+    _isLoadingRecommendation = true;
+  });
+
+  try {
+    final token = await TokenStorage.load(); // 🔐 토큰 불러오기
+    if (token == null) {
+      setState(() {
+        _recommendationText = '로그인이 필요합니다 (토큰 없음)';
+      });
+      return;
+    }
+
+    final response = await http.get(
+      Uri.parse('http://127.0.0.1:8000/ai-diet'),
+      headers: {
+        'Authorization': 'Bearer $token', // ✅ 인증 헤더 추가
+        'Content-Type': 'application/json',
+      },
+    ).timeout(const Duration(seconds: 20));
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(utf8.decode(response.bodyBytes));
+      setState(() {
+        _recommendationText = data['recommendation'];
+      });
+    } else {
+      setState(() {
+        _recommendationText = '추천을 불러오지 못했습니다 (${response.statusCode})';
+      });
+    }
+  } catch (e) {
+    setState(() {
+      _recommendationText = '에러 발생: $e';
+    });
+  } finally {
+    setState(() {
+      _isLoadingRecommendation = false;
+    });
+  }
+}
 
   Future<void> _selectDate() async {
     final DateTime? picked = await showDatePicker(
@@ -58,68 +113,75 @@ class _AnalysisPageState extends State<AnalysisPage> {
     const limeGreen = Color(0xFFB9F73E);
 
     return Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.green[50],
-          elevation: 0,
-          title: Text(
-            '식단 분석',
-            style: TextStyle(
-              color: Colors.green[700],
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              fontStyle: FontStyle.italic,
-            ),
+      appBar: AppBar(
+        backgroundColor: Colors.green[50],
+        elevation: 0,
+        title: Text(
+          '식단 분석',
+          style: TextStyle(
+            color: Colors.green[700],
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            fontStyle: FontStyle.italic,
           ),
-          iconTheme: IconThemeData(color: Colors.green[700]),
         ),
-        body: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: ListView(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Icon(Icons.chevron_left),
-                  const SizedBox(width: 10),
-                  GestureDetector(
-                    onTap: _selectDate,
-                    child: Row(
-                      children: [
-                        const Icon(Icons.calendar_today, size: 18),
-                        const SizedBox(width: 6),
-                        Text(
-                          _formattedDate(selectedDate),
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.green[700],
-                          ),
+        iconTheme: IconThemeData(color: Colors.green[700]),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: ListView(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(Icons.chevron_left),
+                const SizedBox(width: 10),
+                GestureDetector(
+                  onTap: _selectDate,
+                  child: Row(
+                    children: [
+                      const Icon(Icons.calendar_today, size: 18),
+                      const SizedBox(width: 6),
+                      Text(
+                        _formattedDate(selectedDate),
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.green[700],
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                  const SizedBox(width: 10),
-                  const Icon(Icons.chevron_right),
-                ],
-              ),
-              const SizedBox(height: 24),
-              _buildBarChart(),
-              const SizedBox(height: 16),
-              const Text("목표 섭취 칼로리 : 2,400kcal",
-                  style: TextStyle(fontSize: 16)),
-              const Text("총 섭취 칼로리 : 1,100kcal",
-                  style: TextStyle(fontSize: 16)),
-              const SizedBox(height: 24),
-              const Text("AI 식단 추천 🌱",
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-              const SizedBox(height: 12),
-              _bullet("닭가슴살만으로는 영양 불균형이 심각하므로, 다른 재료가 있다고 가정하고 식단을 구성합니다."),
-              _bullet("재료가 없다면 채소, 과일, 탄수화물 등을 반드시 구매해야 합니다."),
-              _bullet("냉장고에 흔히 있는 채소(양파, 파, 마늘), 기름, 소금, 후추가 있다고 가정합니다."),
-            ],
-          ),
+                ),
+                const SizedBox(width: 10),
+                const Icon(Icons.chevron_right),
+              ],
+            ),
+            const SizedBox(height: 24),
+            _buildBarChart(),
+            const SizedBox(height: 16),
+            const Text("목표 섭취 칼로리 : 2,400kcal",
+                style: TextStyle(fontSize: 16)),
+            const Text("총 섭취 칼로리 : 1,100kcal",
+                style: TextStyle(fontSize: 16)),
+            const SizedBox(height: 24),
+            const Text("AI 식단 추천 🌱",
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 12),
+            if (_isLoadingRecommendation)
+              const CircularProgressIndicator()
+            else if (_recommendationText != null)
+              Text(
+                _recommendationText!,
+                style: const TextStyle(fontSize: 16),
+              )
+            else
+              const Text('추천을 불러오지 못했습니다.'),
+          ],
         ),
-        bottomNavigationBar: BottomNavigationBarWidget(currentIndex: 1));
+      ),
+      bottomNavigationBar: BottomNavigationBarWidget(currentIndex: 1),
+    );
   }
 
   Widget _buildBarChart() {
@@ -186,19 +248,6 @@ class _AnalysisPageState extends State<AnalysisPage> {
             ),
           ),
           const SizedBox(height: 16)
-        ],
-      ),
-    );
-  }
-
-  static Widget _bullet(String text) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text("• ", style: TextStyle(fontSize: 16)),
-          Expanded(child: Text(text, style: const TextStyle(fontSize: 16))),
         ],
       ),
     );
